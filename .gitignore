@@ -1,0 +1,34 @@
+# Ignore Python cache and compiled files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# Ignore environment files
+.env          # actual environment file should not be tracked
+!.env.example # allow the example file to be tracked
+
+# Ignore service account keys and secrets
+*.json        # e.g., GCP service account keys
+
+# Ignore logs and temporary output
+*.log
+
+# Ignore local editor and IDE settings
+.vscode/
+.idea/
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore Jupyter Notebook checkpoints
+*.ipynb_checkpoints
+
+# Ignore dependency/environment manager lock files (optional)
+Pipfile.lock
+poetry.lock
+
+# Ignore database files (optional)
+*.db
+*.sqlite3
