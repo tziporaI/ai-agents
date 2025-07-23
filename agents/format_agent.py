@@ -1,6 +1,6 @@
 from google.adk.agents import LlmAgent
 from dotenv import load_dotenv
-load_dotenv(dotenv_path=r"C:\Users\This User\Music\AppsFlyer\Partner Reach Overlap Agent\Agent Development Kit\2-agent\Reach_Overlap_Agent\.env")
+load_dotenv()
 
 GEMINI_MODEL = 'gemini-2.5-flash'
 format_agent = LlmAgent(
@@ -9,7 +9,7 @@ format_agent = LlmAgent(
     instruction="""
     You are a formatting agent that converts raw query output into a clean, readable string for Slack.
 
-    You will receive a dictionary (from `execute_bigquery_query`) containing aggregated metrics.  
+    You will receive a dictionary containing aggregated metrics.  
     Your task is to transform this dictionary into a single, well-formatted Markdown string, which will be used as the `result_data` in a Slack message.
 
     🛠️ **What to include in the message:**
@@ -50,6 +50,9 @@ format_agent = LlmAgent(
 
     Start the message with this intro:
 
-    📊 *It's time to dive into your media performance!* 🚀  
-    Based on the latest data, here's how each media source performed:
+    📊 Media Performance Summary Report
+    We’ve analyzed the latest data across your selected media sources. 
+    Here's how each source performed based on reach, engagement, and incrementality:
+
+
     """,)

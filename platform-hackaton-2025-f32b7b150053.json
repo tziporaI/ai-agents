@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "platform-hackaton-2025",
+  "private_key_id": "f32b7b150053cac8cd981deb2174d72f57e9544b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDhqpg/8zmeoXDg\niwT3lHA9MG3qTvRZUC4psX2Z84fj1RNgNf1X1VfxuKHWvh4ZFMWWYqnhgY2U/BA+\nHz7U4ur5yqsVQiJSx5yCsT26GKGLf0rpSJbo8eX1+9ZauV+0FiamXSbbspkkdfLU\nNKfG7Pbf2gysn0bvrYVzSMFP6oufUAp/fiXbt+xXxOpmIC8y3kqg2EsOpSHSSoAg\n+LAUUAmaL+049wfx2LYM27Cniyl4pMRPL/TJDKhMLFHwpiXCd1QEkpNLdx9ZSoAF\nYsxso54yF2L72D5HdUgezWDXQzQ8gmNYoWfQcp1F+H2/7xIJCqmU34u54AAP8LtW\n0Gi2VKtdAgMBAAECggEANrPiVToyAPyUfrHkYdmXPZX0RwSdodrYXd37GusYSUe4\n+y0LPRPnzh4aCRKr/Bt3bCV9lb8QYYmarFxpoDRjjmqs/ym5ZUSi8WFim65l1olk\nUNl6T3x36KGEDBj8lIx8EP7qsP4Btn9q/jrHYubFT20tfljb2rS+8Tu1NJigAN1z\nGR5upCqn7pw2X/VEbM9bT5b1Yy7aETu3222g+2IblWagZuOI/Rh8E4cMAJn+34sd\nkc5H/3vkj5sdTn8h7IkP85HYM1YsKKqbCvVM4gWcSu9ItpNAmJvLjILrjZMEzHMF\nf23+T7J+tLGl6KWDN/n46NJTGXce/1cVCKPN4YGyRwKBgQD5r4z+5yGU/QuqOfVi\nGwvMDmkFUTWNADNVjgzt4OO/kMtc+DMQurT8E25+O25T8XgDM/yKdy5SDP1uxsU9\nFeB+zaCtG46vG1VKh94QtFxt+9X+etr+QV/R9KdV5uZU6aScp59wNCoY53Lz/6et\ndmaH37E4eTC6CGCtkM/nRIx9MwKBgQDnX4tQR2sITSUev6rQq0/er8pkIyliI8kT\nLG8j2GhuLELEU33IIqSATx7XNHIelvV/HIItWub/ZASEJM2zsAeiHTCByLS2KiQb\nNPNBfuMW1tdj6O9nty6OnPi8fppHKjJaWw/pCDIk1y4NRXcFWHD0V1oDKv3CR5FF\nwEB0d6mVLwKBgDvjDldpSpW4p96ZbjCsugSkhC4BT23VWXqwyosXwKiG6zAOW/ks\nPxKi+oKOcKTzqsxh4LW5ZkPJ19OFG3POVn0zhtFeZbe8P5XTxsCM8gpzN92EzBfl\nyDzMiIJDEoXVUGU+kzBPYrV8dgbuD+K8HlWCorgf4T8NmVqn/CXFPEkfAoGBAMcc\nuxhADcUcFpjKmyZudxKNt5/Lfp6dazob4B057Ez7vA2WSEWGQojFDiZnVNosUWKt\nVv3PH8GjAhvyTC+Zikgh1I+r+JBX3bCoNbskhisugjfRys03oFJMleYpEX2yu5h0\ni1Ggov5/S3tST2YDQVmVHrphMfYSfttG4nEYVZEzAoGAaL1uUaZBFEmKhmoV+2js\nv2261RCsEmdeHhKh80ZLrofk95x0PklNYIEqPW5kwVDJVzO9unpZVRDmp1jxRfK7\nQbs9QArYwXEwWQZSxVpK55H/87CC/GiswQTGBC6U2EYEV3E+22hGTe2Irw257HXY\n7tXgIo3ZpqGIwUy3LiZms6Y=\n-----END PRIVATE KEY-----\n",
+  "client_email": "bigquery-access@platform-hackaton-2025.iam.gserviceaccount.com",
+  "client_id": "117915362169925550019",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/bigquery-access%40platform-hackaton-2025.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

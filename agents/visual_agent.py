@@ -1,16 +1,15 @@
 # visual_agent.py
-
 from google.adk.agents import LlmAgent
-from ..tools.barChart import plot_incrementality_bar_chart
-from ..tools.heatmap import plot_pairwise_overlap_heatmap
-from ..tools.metrix import create_pairwise_overlap_metrix
+
+from ..tools.visual_tools import plot_incrementality_bar_chart,create_pairwise_overlap_metrix,plot_pairwise_overlap_heatmap
 
 from dotenv import load_dotenv
 
-load_dotenv(dotenv_path=r"C:\Users\This User\Music\AppsFlyer\Partner Reach Overlap Agent\Agent Development Kit\2-agent\Reach_Overlap_Agent\.env")
+load_dotenv()
+GEMINI_MODEL = 'gemini-2.5-flash'
 
 visual_agent = LlmAgent(
-    model='gemini-2.0-flash-001',
+    model=GEMINI_MODEL,
     name="visual_agent",
     description="""
     """,
