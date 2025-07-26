@@ -1,9 +1,10 @@
-import os
 import json
-from slack_sdk.errors import SlackApiError
-from slack_sdk import WebClient
 from dotenv import load_dotenv
-
+from slack_sdk import WebClient
+from slack_sdk.errors import SlackApiError
+from google.cloud import storage
+from io import BytesIO
+import os
 load_dotenv()
 
 SLACK_BOT_TOKEN = os.getenv("SLACK_BOT_TOKEN")
@@ -13,9 +14,18 @@ CHANNEL_ID = os.getenv("CHANNEL_ID")
 
 def send_to_slack_str(result_data: str) -> str:
     """
-    Sends a string (possibly JSON-formatted) to a fixed Slack channel.
-    If result_data looks like JSON, we format it as a code block.
+    Sends a formatted result string to a predefined Slack channel.
+
+    Args:
+        result_data (str): The message content to send. Can be a JSON-formatted string or plain text.
+
+    Returns:
+        str: Success message if sent successfully.
+
+    Raises:
+        Exception: If the Slack API request fails or responds with an error.
     """
+
     client = WebClient(token=SLACK_BOT_TOKEN)
 
     try:
@@ -36,97 +46,57 @@ def send_to_slack_str(result_data: str) -> str:
 
 def send_to_slack_visual(routing_image: list[dict]) -> dict:
     """
-    Uploads visualization images to Slack.
+    Uploads one or more visualization images from GCS to a Slack channel.
 
     Args:
-        routing_image: A list of dicts. Each must contain:
-            - name: Chart type (e.g., "Bar Chart")
-            - full_path: Full path to the image directory
-            - file_name: Name of the image file
+        routing_image (list[dict]): A list of dictionaries, each containing:
+            - "name" (str): A display name or title for the image.
+            - "gcs_path" (str): Full GCS URI of the image file (must start with "gs:.//visualisation//images//...").
 
     Returns:
-        dict: {"status": "success"} if upload completes
+        dict: Contains either:
+            - "status": "success", indicating all images were uploaded successfully
+            - "status": "error", with "error_message" (only if handled manually)
+
+    Raises:
+        ValueError: If required keys are missing or GCS path format is invalid.
+        RuntimeError: If an image upload to Slack fails.
     """
-    client = WebClient(token=SLACK_BOT_TOKEN)
 
-    for idx, row in enumerate(routing_image):
-        # Validate required keys
-        if not all(k in row for k in ("name", "full_path", "file_name")):
-            raise ValueError(f"Missing required keys in routing_image[{idx}]: {row}")
+    client = WebClient(token=SLACK_BOT_TOKEN, timeout=15)
+    gcs_client = storage.Client()
 
-        file_path = os.path.join(row["full_path"], row["file_name"])
+    for idx, item in enumerate(routing_image):
+        if not all(k in item for k in ("name", "gcs_path")):
+            raise ValueError(f"Missing required keys in routing_image[{idx}]: {item}")
 
-        if not os.path.exists(file_path):
-            raise FileNotFoundError(f"File not found: {file_path}")
+        gcs_path = item["gcs_path"]
+        if not gcs_path.startswith("gs://"):
+            raise ValueError(f"Invalid GCS path: {gcs_path}")
 
         try:
-            with open(file_path, "rb") as f:
-                client.files_upload_v2(
-                    channel=CHANNEL_ID,
-                    file=f,
-                    title=os.path.basename(file_path),
-                    initial_comment=f"🖼️ *Visualization –* {row['name']}"
-                )
-        except SlackApiError as e:
-            raise Exception(f"Slack upload failed: {e.response['error']}")
+            # Parse GCS path
+            _, _, bucket_name, *blob_parts = gcs_path.split("/")
+            blob_name = "/".join(blob_parts)
+
+            # Download image into memory
+            bucket = gcs_client.bucket(bucket_name)
+            blob = bucket.blob(blob_name)
+            image_stream = BytesIO()
+            blob.download_to_file(image_stream)
+            image_stream.seek(0)
+
+            # Upload to Slack
+            client.files_upload_v2(
+                channel=CHANNEL_ID,
+                file=image_stream,
+                filename=os.path.basename(blob_name),
+                title=os.path.basename(blob_name),
+                initial_comment=f"🖼️ *Visualization –* {item['name']}"
+            )
+
+        except Exception as e:
+            raise RuntimeError(f"Slack upload failed for {gcs_path}: {e}")
 
     return {"status": "success"}
 
-#for GCP
-
-# from slack_sdk import WebClient
-# from slack_sdk.errors import SlackApiError
-# from google.cloud import storage
-# from io import BytesIO
-# import os
-#
-#
-# def send_to_slack_visual(routing_image: list[dict]) -> dict:
-#     """
-#     Uploads visualization images to Slack from Google Cloud Storage.
-#
-#     Args:
-#         routing_image: A list of dicts. Each must contain:
-#             - name: Chart type (e.g., "Bar Chart")
-#             - gcs_path: Full GCS path (e.g., 'gs://my-bucket/folder/image.jpg')
-#
-#     Returns:
-#         dict: {"status": "success"} if upload completes
-#     """
-#     client = WebClient(token=SLACK_BOT_TOKEN)
-#     gcs_client = storage.Client()
-#
-#     for idx, item in enumerate(routing_image):
-#         if not all(k in item for k in ("name", "gcs_path")):
-#             raise ValueError(f"Missing required keys in routing_image[{idx}]: {item}")
-#
-#         gcs_path = item["gcs_path"]
-#         if not gcs_path.startswith("gs://"):
-#             raise ValueError(f"Invalid GCS path: {gcs_path}")
-#
-#         try:
-#             # Parse GCS path
-#             _, _, bucket_name, *blob_parts = gcs_path.split("/")
-#             blob_name = "/".join(blob_parts)
-#
-#             # Download image into memory
-#             bucket = gcs_client.bucket(bucket_name)
-#             blob = bucket.blob(blob_name)
-#             image_stream = BytesIO()
-#             blob.download_to_file(image_stream)
-#             image_stream.seek(0)
-#
-#             # Upload to Slack
-#             client.files_upload_v2(
-#                 channel=CHANNEL_ID,
-#                 file=image_stream,
-#                 filename=os.path.basename(blob_name),
-#                 title=os.path.basename(blob_name),
-#                 initial_comment=f"🖼️ *Visualization –* {item['name']}"
-#             )
-#
-#         except Exception as e:
-#             raise RuntimeError(f"Slack upload failed for {gcs_path}: {e}")
-#
-#     return {"status": "success"}
-#

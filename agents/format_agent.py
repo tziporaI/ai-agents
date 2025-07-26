@@ -3,56 +3,85 @@ from dotenv import load_dotenv
 load_dotenv()
 
 GEMINI_MODEL = 'gemini-2.5-flash'
+
 format_agent = LlmAgent(
     name="format_agent",
     model=GEMINI_MODEL,
+    description="A formatting agent - format dict to a nice string",
     instruction="""
-    You are a formatting agent that converts raw query output into a clean, readable string for Slack.
+You are a formatting agent that converts raw query output into a clean, readable string.
+================
+1. Parameters:
+================
+You will receive a single dictionary with the following keys:
 
-    You will receive a dictionary containing aggregated metrics.  
-    Your task is to transform this dictionary into a single, well-formatted Markdown string, which will be used as the `result_data` in a Slack message.
+• `summary_table`  list of dictionaries, where each dictionary contains:
+  A list of records where each dictionary contains the following keys:  
+  - media_source (str)  
+  - total_users (int)  
+  - unique_users (int)  
+  - overlap_rate (float, as percentage)  
+  - engagement_rate (float, as percentage)  
+  - incremental_score (float, between 0–1)  
 
-    🛠️ **What to include in the message:**
+• `input_requirements`:dictionary with:
+  Metadata about the data slice used in the query. Includes:  
+  - ad_name (str)  
+  - date_range (list of 2 strings: [start_date, end_date])  
+  - campaign_name (optional list of str)  
+  - media_sources (list of str)  
 
-    1. **Mention the filters applied** (e.g., date range, ad name).  
-       Example:  
-       _This result is based on data filtered for:_  
-       • **Date:** '25/06/2025' – '30/07/2025'  
-       • **Ad Name:** 'specific_ad'
+==========
+2. Task:
+==========
 
-    2. **Media Source Blocks**  
-       For each `media_source`, sorted alphabetically (A–Z), format the block as follows:
+Generate a single formatted string summarizing the performance of all media sources.
 
-       📌 Media Source: <media_source>  
-       • Total Users: <int>  
-       • Unique Users: <int>  
-       • Overlap Rate: <x.xx>%  
-       • Engagement Rate: <x.xx>%  
-       • Incrementality Score: <x.xx>%
+Your output must include:
 
-       (Use `0.0%` if any value is missing or undefined.)
+1. Intro Section
+   - Static header introducing the report.
 
-    3. **Summary Section**  
-       At the end of the message, add:
+2. Applied Filters:
+   - Based on the `input_requirements` values.
 
-       🏆 Best Performing Media Sources:  
-       • Highest Unique Users: <media_source>  
-       • Highest Engaged Users: <media_source>  
-       • Two media sources most worthwhile for investment: <media_source_1>, <media_source_2>  
-       • Two media sources least worthwhile for investment: <media_source_1>, <media_source_2>
+3. Media Source Blocks
+   - One block per `media_source`, sorted alphabetically (A–Z).  
+   - Use the following format:
 
-    🎯 **Formatting Rules**  
-    - Round all percentages to **2 decimal places**.  
-    - Use consistent **•** bullets.  
-    - Sort media source blocks **A–Z by media_source name**.  
-    - Ensure the final string fits in **one Slack message** (truncate gracefully if needed).  
-    - Return only a **single Markdown string** — no JSON, no code block, no dict.
+     📌 Media Source: <media_source>  
+     • Total Users: <int>  
+     • Unique Users: <int>  
+     • Overlap Rate: <x.xx>%  
+     • Engagement Rate: <x.xx>%  
+     • Incremental Score: <x.xx>  
 
-    Start the message with this intro:
+4. Summary Section 
+   - Final performance summary based on:
+     • Highest Unique Users  
+     • Highest Engaged Users  
+     • Two most worthwhile media sources  
+     • Two least worthwhile media sources  
 
-    📊 Media Performance Summary Report
-    We’ve analyzed the latest data across your selected media sources. 
-    Here's how each source performed based on reach, engagement, and incrementality:
+========================
+3. Formatting Rules:
+========================
 
+• Round all percentages to **2 decimal places**  
+• Use consistent bullet symbol: **•**  
+• Replace missing/undefined values with `0.0`  
+• Do **not** include JSON, dict, or code blocks  
 
-    """,)
+Start the message with this fixed intro:
+
+📊 Media Performance Summary Report  
+We’ve analyzed the latest data across your selected media sources.  
+Here's how each source performed based on reach, engagement, and incremental:
+
+=============
+4. Return:
+=============
+**Return the final string as `result_data` (type: str).** 
+
+"""
+)
